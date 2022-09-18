@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.example.project</groupId>
+    <artifactId>wsclient-parent</artifactId>
+    <packaging>pom</packaging>
+    <version>1.0.0</version>
+    <name>jax-ws_client_generator_maven</name>
+
+    <modules>
+        <!-- Add modules here -->
+        <module>example_globalweather</module>
+    </modules>
+
+    <properties>
+        <!-- Change Java version if you want -->
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
+
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <cxf.version>3.5.3</cxf.version>
+    </properties>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.cxf</groupId>
+                <artifactId>cxf-codegen-plugin</artifactId>
+                <version>${cxf.version}</version>
+                <executions>
+                    <execution>
+                        <id>generate-sources</id>
+                        <phase>generate-sources</phase>
+                        <configuration>
+                            <defaultOptions>
+                                <autoNameResolution>true</autoNameResolution>
+                                <suppressGeneratedDate>true</suppressGeneratedDate>
+                                <extendedSoapHeaders>true</extendedSoapHeaders>
+                                <extraargs>
+                                    <extraarg>-verbose</extraarg>
+
+                                    <!-- Add or remove more options via plugins -->
+
+                                    <!-- https://github.com/javaee/jaxb2-commons/tree/master/value-constructor -->
+                                    <extraarg>-xjc-Xvalue-constructor</extraarg>
+
+                                    <!-- https://github.com/highsource/jaxb2-basics/wiki/JAXB2-Setters-Plugin-->
+                                    <extraarg>-xjc-Xsetters</extraarg>
+                                    <extraarg>-xjc-Xsetters-mode=direct</extraarg>
+
+                                    <!-- https://github.com/javaee/jaxb2-commons/tree/master/fluent-api -->
+                                    <extraarg>-xjc-Xfluent-api</extraarg>
+
+                                    <!-- https://github.com/highsource/jaxb2-basics/wiki/JAXB2-SimpleHashCode-Plugin -->
+                                    <extraarg>-xjc-XsimpleHashCode</extraarg>
+
+                                    <!-- https://github.com/highsource/jaxb2-basics/wiki/JAXB2-SimpleEquals-Plugin -->
+                                    <extraarg>-xjc-XsimpleEquals</extraarg>
+
+                                    <!-- https://github.com/highsource/jaxb2-basics/wiki/JAXB2-FixJAXB1058-Plugin -->
+                                    <extraarg>-xjc-XfixJAXB1058</extraarg>
+                                </extraargs>
+                            </defaultOptions>
+                            <wsdlRoot>.</wsdlRoot>
+                        </configuration>
+                        <goals>
+                            <goal>wsdl2java</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.jvnet.jaxb2_commons</groupId>
+                        <artifactId>jaxb2-value-constructor</artifactId>
+                        <version>3.0</version>
+                    </dependency>
+                    <dependency>
+                        <groupId>org.jvnet.jaxb2_commons</groupId>
+                        <artifactId>jaxb2-basics</artifactId>
+                        <version>0.12.0</version>
+                    </dependency>
+                    <dependency>
+                        <groupId>org.jvnet.jaxb2_commons</groupId>
+                        <artifactId>jaxb2-fluent-api</artifactId>
+                        <version>3.0</version>
+                    </dependency>
+                </dependencies>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.10.1</version>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <version>3.2.1</version>
+                <executions>
+                    <execution>
+                        <id>attach-sources</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>flatten-maven-plugin</artifactId>
+                <version>1.2.7</version>
+                <executions>
+                    <execution>
+                        <id>flatten</id>
+                        <phase>process-resources</phase>
+                        <goals>
+                            <goal>flatten</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>flatten.clean</id>
+                        <phase>clean</phase>
+                        <goals>
+                            <goal>clean</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
+    <profiles>
+        <profile>
+            <id>jdk11-and-later</id>
+            <activation>
+                <jdk>
+                    [11.0,)
+                </jdk>
+            </activation>
+            <dependencies>
+                <dependency>
+                    <groupId>com.sun.xml.ws</groupId>
+                    <artifactId>jaxws-ri</artifactId>
+                    <version>2.3.5</version>
+                    <type>pom</type>
+                </dependency>
+            </dependencies>
+        </profile>
+    </profiles>
+</project>
